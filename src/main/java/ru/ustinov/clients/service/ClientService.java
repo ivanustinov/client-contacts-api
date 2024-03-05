@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ustinov.clients.entities.Client;
 import ru.ustinov.clients.entities.Contact;
-import ru.ustinov.clients.repositories.ClientRepositry;
+import ru.ustinov.clients.repositories.ClientRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 public class ClientService {
 
     @Autowired
-    private ClientRepositry clientRepositry;
+    private ClientRepository clientRepository;
 
     public ClientTo findById(UUID uuid) {
-        Client client = clientRepositry.getWithContacts(uuid).orElseThrow(NoSuchElementException::new);
+        Client client = clientRepository.getWithContacts(uuid).orElseThrow(NoSuchElementException::new);
         ClientTo clientTo = createTo(client);
         List<Contact> contacts = client.getContacts();
         if (!contacts.isEmpty()) {
@@ -32,25 +32,29 @@ public class ClientService {
     }
 
     public List<ClientTo> getClients() {
-        List<Client> clients = clientRepositry.findAll();
+        List<Client> clients = clientRepository.findAll();
         return clients.stream().map(this::createTo).collect(Collectors.toList());
     }
 
     public ClientTo saveClient(ClientTo clientTo) {
         Client client = new Client();
         client.setFullName(clientTo.getName());
-        Client save = clientRepositry.save(client);
+        Client save = clientRepository.save(client);
         return createTo(save);
     }
 
     public List<ContactTo> mapContacts(List<Contact> contacts) {
-        return contacts.stream().map(contact -> {
-            ContactTo contactTo = new ContactTo();
-            contactTo.setId(contact.getId());
-            contactTo.setType(contact.getType());
-            contactTo.setValue(contact.getValue());
-            return contactTo;
-        }).collect(Collectors.toList());
+        List<ContactTo> contactTos = new ArrayList<>();
+        if (contacts != null) {
+            contactTos = contacts.stream().map(contact -> {
+                ContactTo contactTo = new ContactTo();
+                contactTo.setId(contact.getId());
+                contactTo.setType(contact.getType());
+                contactTo.setValue(contact.getValue());
+                return contactTo;
+            }).collect(Collectors.toList());
+        }
+        return contactTos;
     }
 
     public ClientTo createTo(Client client) {

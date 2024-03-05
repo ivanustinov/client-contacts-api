@@ -4,8 +4,11 @@ import io.swagger.api.ClientsApi;
 import io.swagger.model.ClientTo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ustinov.clients.service.ClientService;
+import ru.ustinov.clients.validators.ContactValidator;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,11 +18,6 @@ public class ClientController implements ClientsApi {
 
     @Autowired
     private ClientService clientService;
-
-//    @InitBinder
-//    protected void initBinder(WebDataBinder binder) {
-//        binder.addValidators(uniqueRestaurantNameValidator);
-//    }
 
     @Override
     public ResponseEntity<ClientTo> createClient(ClientTo to) {

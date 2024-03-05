@@ -7,7 +7,7 @@ spring:
       #  http://docs.jboss.org/hibernate/orm/5.3/userguide/html_single/Hibernate_User_Guide.html#configurations
       hibernate:
         format_sql: true
-        show_sql: true
+#        show_sql: true
         default_batch_fetch_size: 20
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
         jdbc.batch_size: 20
@@ -46,7 +46,7 @@ springdoc:
 logging:
   level:
     root: WARN
-    ru.ustinov.appointment: INFO
+    ru.ustinov.clients: INFO
     org.springframework.orm.jpa: INFO
     org.springframework.web: DEBUG
     org.springframework.ws: DEBUG

@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ClientRepositry extends JpaRepository<Client, UUID> {
+public interface ClientRepository extends JpaRepository<Client, UUID> {
 
     @EntityGraph(attributePaths = {"contacts"}, type = EntityGraph.EntityGraphType.LOAD)
     @Query("select c from Client c where c.id=:uuid")

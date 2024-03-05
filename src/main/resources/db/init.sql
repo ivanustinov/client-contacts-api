@@ -10,4 +10,5 @@ create table if not exists contacts (
   client_id uuid references clients(id),
   type varchar(20) not null,
   value varchar(100) not null
+        constraint contact_value_constr unique
 );
