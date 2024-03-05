@@ -1,0 +1,328 @@
+openapi: 3.0.0
+info:
+  title: OpenAPI спецификация для работы с клиентами и их контактами
+  description: OpenAPI спецификация для работы с клиентами и их контактами
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0
+  contact:
+    name: Ivan Ustinov
+    url: https://github.com/MorkovkAs/openapi-example-clients
+    email: ivanustinov1985@yandex.ru
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Dev server
+
+tags:
+  - name: Clients
+    description: "Методы работы с данными клиента"
+  - name: Contacts
+
+externalDocs:
+  url: https://github.com/MorkovkAs/openapi-example-clients-autogen
+
+paths:
+  /clients:
+    post:
+      summary: Метод добавления нового клиента в каталог
+      operationId: createClient
+      tags:
+        - Clients
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClientTo"
+            example:
+              name: Сидоров Семен Семенович
+      responses:
+        '200':
+          description: Подтверждение успешного сохранения
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientTo"
+              example:
+                client_id: 22abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+                name: Сидоров Семен Семенович
+        '400':
+          description: Некорректные входные данные. Возвращает список атрибутов с ошибками
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    get:
+      summary: Получение списка клиентов
+      operationId: getClients
+      tags:
+        - Clients
+      responses:
+        '200':
+          description: Список клиентов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClientTo"
+              example:
+                - clinet_id: 12abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+                  name: Петров Иван Петрович
+                - clinet_id: 22abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+                  name: Сидоров Семен Семенович
+
+  /clients/{id}:
+    get:
+      summary: Метод получения клиента по идентификатору
+      operationId: getClientById
+      tags:
+        - Clients
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор клиента
+          schema:
+            type: string
+            format: uuid
+            example: 42abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+      responses:
+        '200':
+          description: Клиент
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientTo"
+              example:
+                clinet_id: 12abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+                name: Петров Иван Петрович
+                phones:
+                  - contact_id: 12abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+                    value: 9120361878
+                    type: PHONE
+                emails:
+                  - contact_id: 12abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+                    value: ivanustinov1985@yandex.ru
+                    type: EMAIL
+        '400':
+          description: Некорректные входные данные
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /contacts/{clientId}:
+    get:
+      summary: Получение списка контактов заданного клиента
+      operationId: getContactsByClient
+      tags:
+        - Contacts
+      parameters:
+        - in: path
+          name: clientId
+          required: true
+          description: Идентификатор клиента
+          schema:
+            type: string
+            format: uuid
+            example: 42abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+        - in: query
+          name: type
+          description: Тип контактов (все или телефоны или email-ы)
+          schema:
+           $ref: '#/components/schemas/ContactType'
+          examples:
+            all:
+              value: ''
+            phone:
+              value: PHONE
+            email:
+              value: EMAIL
+      responses:
+        '200':
+          description: Контакты клиента
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContactTo'
+              examples:
+                all:
+                  value:
+                    - contact_id: 12abcd2b-8b9c-4af9-88f7-0bc180cf74b6
+                      value: 9120361878
+                      type: PHONE
+                    - contact_id: 12abcd2b-8b9c-4af9-88f7-0bc180cf74b7
+                      value: ivanustinov1985@yandex.ru
+                      type: EMAIL
+                emails:
+                  value:
+                    - contact_id: 12abcd2b-8b9c-4af9-88f7-0bc180cf74b7
+                      value: ivanustinov1985@yandex.ru
+                      type: EMAIL
+                phones:
+                  value:
+                    - contact_id: 12abcd2b-8b9c-4af9-88f7-0bc180cf74b6
+                      value: 9120361878
+                      type: PHONE
+
+    post:
+      summary: Добавление нового контакта клиента (телефон или email)
+      operationId: createContact
+      tags:
+        - Contacts
+      parameters:
+        - in: path
+          name: clientId
+          required: true
+          description: Идентификатор клиента
+          schema:
+            type: string
+            format: uuid
+            example: 55abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+        - in: query
+          name: type
+          required: true
+          description: Тип контакта (phone или email)
+          schema:
+            $ref: '#/components/schemas/ContactType'
+          examples:
+            phone:
+              value: PHONE
+            email:
+              value: EMAIL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactTo"
+            examples:
+              phone:
+                value:
+                  value: 9120361878
+              email:
+                value:
+                  value: ivanustinov1985@yandex.ru
+      responses:
+        '200':
+          description: Подтверждение успешного сохранения
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactTo"
+              examples:
+                email:
+                  value:
+                    - contact_id: 12abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+                      value: ivanustinov1985@yandex.ru
+                      type: EMAIL
+                phone:
+                  value:
+                    - contact_id: 12abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+                      value: 9120361878
+                      type: PHONE
+components:
+  schemas:
+    ClientTo:
+      type: object
+      required:
+        - name
+      properties:
+        client_id:
+          type: string
+          format: uuid
+          example: 42abcd2b-8b9c-4af9-88f7-0bc180cf74b4
+        name:
+          description: Имя клиента
+          type: string
+          example: Сидоров Иван Петрович
+        emails:
+          description: Адреса электронной почты
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactTo"
+        phones:
+          description: Телефонные номера
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactTo"
+    ContactTo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        clientId:
+          type: string
+          format: uuid
+        type:
+          $ref: '#/components/schemas/ContactType'
+        value:
+          type: string
+      required:
+        - clientId
+        - type
+        - value
+    ContactType:
+      type: string
+      enum: [ PHONE, EMAIL ]
+      description: Тип контакта
+
+#    Error:
+#      type: object
+#      required:
+#        - title
+#        - detail
+#        - request
+#        - time
+#        - errorTraceId
+#      properties:
+#        title:
+#          description: Краткое описание проблемы, понятное человеку
+#          type: string
+#          example: Entity not found
+#        detail:
+#          description: Описание конкретно возникшей ошибки, понятное человеку
+#          type: string
+#          example: Entity [Post] with id = [123456] not found. You MUST use POST to add entity instead of PUT
+#        request:
+#          description: Метод и URL запроса
+#          type: string
+#          example: PUT /posts/123456
+#        time:
+#          description: Время возникновения ошибки с точностью до миллисекунд
+#          type: string
+#          example: 1996-12-19T16:39:57.87-08:00
+#        errorTraceId:
+#          description: Идентификатор конкретного возникновения ошибки
+#          type: string
+#          example: ce1ff211-b5dd-4397-b8a8-3f640705efa2
+#
+#        errorCode:
+#          description: Код ошибки по бизнес логике приложения
+#          type: integer
+#          format: int32
+#          example: 57
+#
+#        exception:
+#          description: Тип ошибки
+#          type: string
+#          example: NullPointerException
+#        stacktrace:
+#          description: Stacktrace в случае возникновения на сервере исключения
+#          type: string
+#          example: ...
+#        causeException:
+#          description: Тип первоначального исключения
+#          type: string
+#          example: ...
+#        causeStacketrace:
+#          description: Stacktrace первоначального исключения
+#          type: string
+#          example: ...
