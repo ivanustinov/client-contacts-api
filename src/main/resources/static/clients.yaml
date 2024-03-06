@@ -15,6 +15,7 @@ tags:
   - name: Clients
     description: "Методы работы с данными клиента"
   - name: Contacts
+    description: "Методы работы с контактами клиента"
 
 paths:
   /clients:
