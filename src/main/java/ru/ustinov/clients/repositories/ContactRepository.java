@@ -8,6 +8,7 @@ import ru.ustinov.clients.entities.Client;
 import ru.ustinov.clients.entities.Contact;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -18,4 +19,6 @@ public interface ContactRepository extends JpaRepository<Contact, UUID> {
 
     @Query("SELECT c FROM Contact c WHERE c.client.id=:clientId")
     List<Contact> findByClient(UUID clientId);
+
+    Optional<Contact> findContactByValue(String value);
 }

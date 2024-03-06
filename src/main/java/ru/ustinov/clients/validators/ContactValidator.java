@@ -3,6 +3,7 @@ package ru.ustinov.clients.validators;
 import io.swagger.model.ContactTo;
 import io.swagger.model.ContactType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -18,12 +19,12 @@ public class ContactValidator implements Validator {
     private PhoneValidator phoneValidator;
 
     @Override
-    public boolean supports(Class<?> clazz) {
+    public boolean supports(@NonNull Class<?> clazz) {
         return ContactTo.class.isAssignableFrom(clazz);
     }
 
     @Override
-    public void validate(Object target, Errors errors) {
+    public void validate(@NonNull Object target, @NonNull Errors errors) {
         ContactTo contact = (ContactTo) target;
         if (contact.getType() == ContactType.EMAIL) {
             ValidationUtils.invokeValidator(emailValidator, contact, errors);

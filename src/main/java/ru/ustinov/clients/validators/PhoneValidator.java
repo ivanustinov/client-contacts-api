@@ -12,8 +12,7 @@ import java.util.regex.Pattern;
 @Component
 public class PhoneValidator implements Validator {
 
-    private static final String PHONE_PATTERN =
-        "^\\+(?:[0-9] ?){6,14}[0-9]$";
+    private static final String PHONE_PATTERN = "^\\+\\d{11}$";
 
     private final Pattern pattern;
 

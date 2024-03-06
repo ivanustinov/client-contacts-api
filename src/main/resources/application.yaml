@@ -7,15 +7,10 @@ spring:
       #  http://docs.jboss.org/hibernate/orm/5.3/userguide/html_single/Hibernate_User_Guide.html#configurations
       hibernate:
         format_sql: true
-#        show_sql: true
+        show_sql: true
         default_batch_fetch_size: 20
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
         jdbc.batch_size: 20
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/clients
-    username: user
-    password: password
 
   jackson:
     visibility:
@@ -25,12 +20,10 @@ spring:
       is-getter: none
     default-property-inclusion: non_null
 
-  sql:
-    init:
-#      mode: always
-      data-locations: classpath:db/data.sql
-      schema-locations: classpath:db/init.sql
 
+
+  profiles:
+    active: postgres
 
 server.servlet:
   encoding:
@@ -50,3 +43,30 @@ logging:
     org.springframework.orm.jpa: INFO
     org.springframework.web: DEBUG
     org.springframework.ws: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/clients
+    username: user
+    password: password
+  sql:
+    init:
+      data-locations: classpath:db/data.sql
+      schema-locations: classpath:db/init.sql
+
+---
+spring:
+  config:
+    activate:
+      on-profile: h2
+  datasource:
+    # ImMemory
+    url: jdbc:h2:mem:clients
+    #   tcp: jdbc:h2:tcp://localhost:9092/mem:clients
+    h2.console.enabled: true
+
+

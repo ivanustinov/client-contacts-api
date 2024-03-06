@@ -2,13 +2,10 @@ openapi: 3.0.0
 info:
   title: OpenAPI спецификация для работы с клиентами и их контактами
   description: OpenAPI спецификация для работы с клиентами и их контактами
-  license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: 0.1.0
   contact:
     name: Ivan Ustinov
-    url: https://github.com/MorkovkAs/openapi-example-clients
+    url: https://github.com/ivanustinov/client-contacts-api
     email: ivanustinov1985@yandex.ru
 servers:
   - url: http://localhost:8080/api/v1
@@ -18,9 +15,6 @@ tags:
   - name: Clients
     description: "Методы работы с данными клиента"
   - name: Contacts
-
-externalDocs:
-  url: https://github.com/MorkovkAs/openapi-example-clients-autogen
 
 paths:
   /clients:

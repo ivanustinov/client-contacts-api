@@ -2,6 +2,7 @@ package ru.ustinov.clients.validators;
 
 
 import io.swagger.model.ContactTo;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -23,16 +24,16 @@ public class EmailValidator implements Validator {
     }
 
     @Override
-    public boolean supports(Class<?> clazz) {
+    public boolean supports(@NonNull Class<?> clazz) {
         return ContactTo.class.equals(clazz);
     }
 
     @Override
-    public void validate(Object target, Errors errors) {
+    public void validate(@NonNull Object target, @NonNull Errors errors) {
         ContactTo email = (ContactTo) target;
         Matcher matcher = pattern.matcher(email.getValue());
         if (!matcher.matches()) {
-            errors.rejectValue("value", "invalid.email", "Неправильная почта");
+            errors.rejectValue("value", "invalid.email", "Невалидное значение электронной почты");
         }
     }
 }

@@ -29,9 +29,11 @@ public class Contact {
     private Client client;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "contact_type")
     private ContactType type;
 
     @NotNull
+    @Column(name = "contact_value")
     private String value;
 
     @Override
